@@ -72,6 +72,9 @@ public class Pacman {
             } else {
                 currentDirection = DIRECTION_STILL;    
             }
+            if (maze.hasDotAt(getRow(), getColumn())) {
+            	maze.removeDotAt(getRow(), getColumn());
+            }
         }
         move(currentDirection);
     }
