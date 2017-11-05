@@ -7,14 +7,18 @@ public class Pacman {
 	
 	private int currentDirection;
     private int nextDirection;
+
+	private Maze maze;
 	
     public static final int SPEED = 5;
     
-	public Pacman(int x, int y) {
+	public Pacman(int x, int y, Maze maze) {
 		position = new Vector2(x,y);
 		
 		currentDirection = DIRECTION_STILL;
         nextDirection = DIRECTION_STILL;
+        
+        this.maze = maze;
 	}
 	
 	public Vector2 getPosition() {
@@ -46,9 +50,28 @@ public class Pacman {
         		((((int)position.y - blockSize/2) % blockSize) == 0);
     }
 	
+	private int getRow() {
+        return ((int)position.y) / WorldRenderer.BLOCK_SIZE; 
+    }
+ 
+    private int getColumn() {
+        return ((int)position.x) / WorldRenderer.BLOCK_SIZE; 
+    }
+	
+	private boolean canMoveInDirection(int dir) {
+        int newRow = getRow() + DIR_OFFSETS[dir][1];
+        int newCol = getColumn() + DIR_OFFSETS[dir][0];
+		
+		return !maze.hasWallAt(newRow, newCol);  
+    }
+	
 	public void update() {
-        if(isAtCenter()) {
-            currentDirection = nextDirection;
+		if(isAtCenter()) {
+            if(canMoveInDirection(nextDirection)) {
+                currentDirection = nextDirection;    
+            } else {
+                currentDirection = DIRECTION_STILL;    
+            }
         }
         move(currentDirection);
     }
